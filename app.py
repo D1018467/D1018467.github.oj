@@ -58,4 +58,4 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 if __name__ == '__main__':
-    app.run(host='192.168.68.54', port=5000, debug=True)
+    app.run(host='172.20.10.3', port=5000, debug=True)
