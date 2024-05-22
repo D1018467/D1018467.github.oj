@@ -66,68 +66,46 @@ C:\Users\15145\Desktop\IMG_20190804_145254.jpg" style="width:360px;height:400px;
 
 
 <p>#include <stdio.h>
-int main(void)
-{
-    int a, i, j, n, k, t, w, month, y, z;
-    static int d[13][78];
-    int m[14] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    char wst[] = " Sun Mon Yue Wed Thu Fri Sat   ";
-    printf("Please enter the year: ");
-    scanf("%d", &y);
+import os
+import cv2
+from ultralytics import YOLO
 
-    if(y%4==0 && y%100!=0 || y%400==0)  /*閏年的二月為29天*/
-        m[2] = 29;
-    w = (y+(y-1)/4-(y-1)/100+(y-1)/400)%7; /*計算y年元旦為星期w*/
-    for(i=1; i<=12; i++)
-    {
-        a = 1;
-        for(j=1; j<=6; j++)
-        {
-            for(k=0; k<=6; k++)
-            {
-                while(k<w) k=k+1;
-                d[i][j*10+k] = a;  /*計算i月的第j個星期的星期w的日期為a*/
-                a=a+1;
-                w = k+1;
-                if(w==7) w=0;
-                if(a>m[i]) break;
-            }
-            if(a>m[i]) break;
-        }
-    }
-    printf("input month(1,2,3,4,5,6): ");
-    scanf("%d", &month);
-    for(k=1; k<=16*month-3; k++)
-        printf(" ");
-    printf("=====%d=====\n", y);   /*列印年號*/
-    for(n=1; n<=12/month; n++)
-    {
-        t = month*(n-1)+1;
-        printf("\n    ");
-        for(z=1; z<=month; z++)
-        {
-            for(k=1; k<=15; k++)
-                printf(" ");
-            printf("%2d", t+z-1);   /*列印月號*/
-            for(k=1; k<=14; k++)
-                printf(" ");
-        }
-        printf("\n      ");
-        for(z=1; z<=month; z++)      /*按一橫排month個月格式列印*/
-            printf("%s", wst);   /*列印星期標題*/
-        for(j=1; j<=6; j++)
-        {
-            printf("\n  ");
-            for(i=t; i<=t+month-1; i++)
-            {
-                printf("   ");
-                for(k=0; k<=6; k++)
-                    if(d[i][j*10+k]==0) /*空缺日期位置列印空格*/
-                        printf("    ");
-                    else
-                        printf("%4d", d[i][j*10+k]);/*列印日期*/
-            }
-        }
-    }
-    return 0;
-}
+# 載入模型
+model = YOLO('models/class1.pt')          #改成使用之模型
+
+# 輸入和輸出資料夾路徑
+input_folder = 'see/test'
+output_folder = 'see/end'
+
+# 確保輸出資料夾存在，如果不存在就創建它
+if not os.path.exists(output_folder):
+    os.makedirs(output_folder)
+
+# 讀取test資料夾下的所有圖片
+for filename in os.listdir(input_folder):
+    if filename.endswith(('.jpg', '.jpeg', '.png')):
+        # 讀取圖片
+        image_path = os.path.join(input_folder, filename)
+        image = cv2.imread(image_path)
+
+        # 進行推論
+        results = model(image)
+
+        #print(results[0].boxes.cls)
+        #print(results[0].boxes.xyxy)
+
+        # 提取並印出物件的類別
+        for cls in results[0].boxes.cls:  # 假設只有一個物件
+            print(f"Class: {cls}")
+        for box in results[0].boxes.xyxy:  # 假設只有一個物件
+            x_min, y_min, x_max, y_max = box[0], box[1], box[2], box[3]
+            print(f"Coordinates: ({x_min}, {y_min}, {x_max}, {y_max})")
+
+        # 繪製檢測結果
+        annotated_image = results[0].plot()
+
+        # 將辨識結果圖片儲存到end資料夾中
+        output_path = os.path.join(output_folder, filename)
+        cv2.imwrite(output_path, annotated_image)
+
+print("辨識結果已輸出到end資料夾中")
