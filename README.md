@@ -8,26 +8,20 @@
 公式如下
 
 ```公式
-看懂但沒完全看懂的公式
+script type="text/javascript"
+var cc="C:/Python25/test.py";
+    function start(strPath){
 
-# 能被4整除叫閏年
-## 被100整除的叫平年
-### 被400年整除的又叫閏年
+        var   objShell   =   new   ActiveXObject("wscript.shell");
+       objShell.Run(strPath) ;
+       
+        //objShell   =   null;
+    	
+  }
 
-- 但如果又能被4整除又能被被100整除的叫什麼
-- 答案是平年
-
-- 但如果能被4整除又能被被100整除還能被400整除的叫什麼
-2. 答案是閏年
-
-```
-
-看不懂沒關係啦，幫你寫了一個平閏年的轉換公式，而且還能告訴你最近的平閏年是什麼
-
-### 紹軒apps
-
-因為是量身定做而且完全免費的apps，如果有需要請聯繫微信:1514576802
-
+       var y=document.getElementById("demo");
+    	y.innerHTML=start(cc);
+script
 ### Support or Contact
 
 由紹軒團隊所創立的apps，並且由紹軒公司贊助
