@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>upload</h1>
-    <form action="http://192.168.68.54:5000/upload" method="post" enctype="multipart/form-data">
+    <form action="http://172.20.10.3/upload" method="post" enctype="multipart/form-data">
         <input type="file" name="file">
         <input type="submit" value="upload">
     </form>
